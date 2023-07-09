@@ -11,9 +11,9 @@ $(document).ready(function() {
 			"buttons": [
 				'colvis',
 				'copyHtml5',
-        'csvHtml5',
+        		'csvHtml5',
 				'excelHtml5',
-        'pdfHtml5',
+        		'pdfHtml5',
 				'print'
 			]
 		}

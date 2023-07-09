@@ -69,6 +69,9 @@ for app_name, app_raw_data in json_object['packages'].items():
     repository_stats = _get_repository_stats(g, gl, repository, repository_domain)
     summary_en = metadata["summary"].get("en-US", "") if "summary" in metadata else ""
     description_en = metadata["description"].get("en-US", "") if "description" in metadata else ""
+    icon_url = metadata["icon"].get("en-US", "") if "icon" in metadata else ""
+    if icon_url:
+        icon_url = f"https://f-droid.org/repo{icon_url['name']}"
 
     list_data.append({ 'name': metadata["name"]["en-US"],
                 'id': app_name,
@@ -80,6 +83,7 @@ for app_name, app_raw_data in json_object['packages'].items():
                 'added': metadata["added"],
                 'last_updated': metadata["lastUpdated"],
                 'url': f"https://f-droid.org/en/packages/{app_name}",
+                'icon_url': icon_url,
                 **repository_stats
                 })
 

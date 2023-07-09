@@ -9,7 +9,7 @@ $(document).ready(function() {
 	// DataTable initialisation
 	$('#insights').DataTable(
 		{
-			"dom": 'Blfrtip',
+			"dom": 'BlfrtipQ',
 			"buttons": [
 				'copy',
         		'csv',
@@ -22,8 +22,8 @@ $(document).ready(function() {
 			"pageLength": 25,
 			"order": [[2, 'desc']],
     		"columnDefs": [
-      	  	  { type: numbersType, targets: [2, 3, 4, 5] },
-      	  	  { targets: [9, 10], render: DataTable.render.datetime('x', 'YYYY-MM-DD', 'en') },
+      	  	  { type: numbersType, targets: [2, 3] },
+      	  	  { targets: [7, 8], render: DataTable.render.datetime('x', 'YYYY-MM-DD', 'en') },
     		],
 		}
 	);

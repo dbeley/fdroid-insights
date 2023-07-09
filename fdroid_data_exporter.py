@@ -2,6 +2,7 @@ import os
 import json
 import time
 import calendar
+import requests
 import pandas as pd
 from github import Github
 from github.GithubException import UnknownObjectException
@@ -44,8 +45,6 @@ def _get_repository_stats(
         return {
             "repository_stars_count": repo.stargazers_count,
             "repository_forks_count": repo.forks_count,
-            "repository_subscribers_count": repo.subscribers_count,
-            "repository_watchers_count": repo.watchers_count,
         }
     elif repository_domain == "gitlab.com":
         try:
@@ -57,7 +56,14 @@ def _get_repository_stats(
             "repository_stars_count": repo.star_count,
             "repository_forks_count": repo.forks_count,
         }
-
+    elif repository_domain == "codeberg.org":
+        result = requests.get(f"https://codeberg.org/api/v1/repos/{repository_name}")
+        if result.status_code == 200:
+            json_result = result.json()
+            return {
+                "repository_stars_count": json_result.get("stars_count"),
+                "repository_forks_count": json_result.get("forks_count"),
+            }
     return {}
 
 
@@ -107,8 +113,6 @@ df = df.astype(
     {
         "repository_stars_count": "Int64",
         "repository_forks_count": "Int64",
-        "repository_subscribers_count": "Int64",
-        "repository_watchers_count": "Int64",
     }
 )
 df = df.sort_values(by=["name"])

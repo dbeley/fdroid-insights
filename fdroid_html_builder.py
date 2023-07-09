@@ -14,12 +14,12 @@ df = df.astype(
     {
         "repository_stars_count": "Int64",
         "repository_forks_count": "Int64",
-        "repository_subscribers_count": "Int64",
-        "repository_watchers_count": "Int64",
     }
 )
 df = df.fillna(
     {
+        "repository_forks_count": 0,
+        "repository_stars_count": 0,
         "repository": "",
         "repository_domain": "",
         "summary": "",
@@ -31,8 +31,6 @@ header = (
     "<th>Repository</th>"
     "<th>Repository Stars Count</th>"
     "<th>Repository Forks Count</th>"
-    "<th>Repository Subscribers Count</th>"
-    "<th>Repository Watchers Count</th>"
     "<th>Repository Domain</th>"
     "<th>Summary</th>"
     "<th>Categories</th>"
@@ -60,10 +58,6 @@ for index, row in df.iterrows():
         f"<td>{row['repository_stars_count']}</td>"
         "\n"
         f"<td>{row['repository_forks_count']}</td>"
-        "\n"
-        f"<td>{row['repository_subscribers_count']}</td>"
-        "\n"
-        f"<td>{row['repository_watchers_count']}</td>"
         "\n"
         f"<td>{row['repository_domain']}</td>"
         "\n"

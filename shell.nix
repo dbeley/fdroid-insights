@@ -8,6 +8,7 @@ in pkgs.mkShell rec {
     pythonPackages.python
     pythonPackages.pip
 
+    pythonPackages.requests
     pythonPackages.pandas
     pythonPackages.pygithub
     pythonPackages.python-gitlab

@@ -19,3 +19,9 @@ The idea behind this repository is to look at external metrics to help choosing 
 
 - `fdroid_data_exporter.py`: Create `export.csv` containing F-Droid apps data.
 - `fdroid_html_builder.py`: Create `docs/index.html` with `export.csv` and `template.html`.
+
+## External data
+
+- Github: number of stars, forks
+- Gitlab : number of stars, forks
+- Codeberg : number of stars, forks

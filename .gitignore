@@ -1,0 +1,6 @@
+.env
+*.json
+*.csv
+todo.txt
+.direnv/
+index.html

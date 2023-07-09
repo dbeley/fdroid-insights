@@ -2,7 +2,6 @@ $(document).ready(function() {
 	//Only needed for the filename of export files.
 	//Normally set in the title tag of your page.
 	document.title='F-Droid Insights - Explore F-Droid apps easily with data from external sources';
-	$.fn.dataTable.moment( 'x' );
   	var numbersType = $.fn.dataTable.absoluteOrderNumber( [
     	{ value: 'N/A', position: 'bottom' }
   	] );
@@ -10,7 +9,7 @@ $(document).ready(function() {
 	// DataTable initialisation
 	$('#insights').DataTable(
 		{
-			// "dom": '<Q"dt-buttons"Bf><"clear">lirtp',
+			// "dom": '<"dt-buttons"BQf><"clear">lirtp',
 			"dom": 'BQlfrtip',
 			"buttons": [
 				'copy',
@@ -24,19 +23,9 @@ $(document).ready(function() {
 			"pageLength": 25,
 			"order": [[2, 'desc']],
     		"columnDefs": [
-      	  	  { type: numbersType, targets: [2, 3, 4, 5] }
+      	  	  { type: numbersType, targets: [2, 3, 4, 5] },
+      	  	  { targets: [9, 10], render: DataTable.render.datetime('x', 'YYYY-MM-DD', 'en') },
     		],
-    		// "searchBuilder": {
-    		// 	preDefined: {
-    		// 		criteria: [
-    		// 			{
-    		// 				data: "Categories",
-    		// 				condition: "contains",
-    		// 				value: ["Development"]
-    		// 			}
-    		// 		]
-    		// 	}
-    		// }
 		}
 	);
 });

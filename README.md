@@ -13,3 +13,9 @@ By only relying on donation to sustain their infrastructure you will see no ads,
 They also don't track their users. But as we can't know how many times an app has been downloaded, by not knowing the popularity of an app it can be difficult to choose between several choices.
 
 The idea behind this repository is to look at external metrics to help choosing popular and well-maintained F-Droid apps.
+
+
+## Usage
+
+- `fdroid_data_exporter.py`: Create `export.csv` containing F-Droid apps data.
+- `fdroid_html_builder.py`: Create `docs/index.html` with `export.csv` and `template.html`.

@@ -10,16 +10,17 @@ $(document).ready(function() {
 	// DataTable initialisation
 	$('#insights').DataTable(
 		{
-			"dom": '<"dt-buttons"Bf><"clear">lirtp',
+			// "dom": '<"dt-buttons"Bf><"clear">lirtp',
+			"dom": 'Bfrtip',
+			"buttons": [
+				'copy',
+        		'csv',
+				'excel',
+				'print'
+			],
 			"paging": true,
 			"autoWidth": true,
 			"pageLength": 100,
-			"buttons": [
-				'copyHtml5',
-        		'csvHtml5',
-				'excelHtml5',
-				'print'
-			],
 			"order": [[2, 'desc']],
     		"columnDefs": [
       	  	  { type: numbersType, targets: [2, 3, 4, 5] }

@@ -36,12 +36,17 @@ header = (
 table_data = ""
 table_data += "<tbody>\n"
 for index, row in df.iterrows():
-    icon = row["icon"]
     repository = row["repository"]
+    icon = row["icon"]
     url = row["url"]
+    name_with_icon = (
+        f"<td><img src='{icon}' width='32' alt='{icon}'> <a href='{url}'>{row['name']}</a></td>"
+        if icon
+        else f"<td><a href='{url}'>{row['name']}</a></td>"
+    )
     table_data += (
         "<tr>\n"
-        f"<td><img src='{icon}' width='32' alt='{icon}'> <a href='{url}'>{row['name']}</a></td>"
+        f"{name_with_icon}"
         "\n"
         f"<td><a href='{repository}'>{repository}</a></td>"
         "\n"

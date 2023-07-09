@@ -10,7 +10,8 @@ $(document).ready(function() {
 	// DataTable initialisation
 	$('#insights').DataTable(
 		{
-			"dom": '<"dt-buttons"Bf><"clear">lirtp',
+			// "dom": '<Q"dt-buttons"Bf><"clear">lirtp',
+			"dom": 'BQlfrtip',
 			"buttons": [
 				'copy',
         		'csv',
@@ -24,7 +25,18 @@ $(document).ready(function() {
 			"order": [[2, 'desc']],
     		"columnDefs": [
       	  	  { type: numbersType, targets: [2, 3, 4, 5] }
-    		]
+    		],
+    		// "searchBuilder": {
+    		// 	preDefined: {
+    		// 		criteria: [
+    		// 			{
+    		// 				data: "Categories",
+    		// 				condition: "contains",
+    		// 				value: ["Development"]
+    		// 			}
+    		// 		]
+    		// 	}
+    		// }
 		}
 	);
 });

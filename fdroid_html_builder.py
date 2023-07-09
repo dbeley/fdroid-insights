@@ -1,4 +1,5 @@
 from string import Template
+from datetime import datetime
 import pandas as pd
 
 
@@ -71,9 +72,10 @@ for index, row in df.iterrows():
         "</tr>\n"
     )
 
+date_update = datetime.today().strftime("%Y-%m-%d")
 
 formatted_message = read_template("template.html").safe_substitute(
-    {"header": header, "table_data": table_data}
+    {"date_update": date_update, "header": header, "table_data": table_data}
 )
 with open("docs/index.html", "w") as f:
     f.write(formatted_message)

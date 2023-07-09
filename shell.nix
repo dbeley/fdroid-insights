@@ -11,8 +11,6 @@ in pkgs.mkShell rec {
     pythonPackages.pandas
     pythonPackages.pygithub
     pythonPackages.python-gitlab
-    pythonPackages.datasette
-    csvs-to-sqlite
 
     pre-commit
   ];

@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	//Only needed for the filename of export files.
 	//Normally set in the title tag of your page.
-	document.title='F-Droid Insights - Explore F-Droid apps easily with data from external sources';
+	document.title='F-Droid Insights - Easily explore F-Droid apps with data from external sources';
   	var numbersType = $.fn.dataTable.absoluteOrderNumber( [
     	{ value: 'N/A', position: 'bottom' }
   	] );

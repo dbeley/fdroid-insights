@@ -61,6 +61,6 @@ for index, row in df.iterrows():
             )
 
 
-formatted_message = read_template("web/template.html").safe_substitute({"header": header, "table_data": table_data})
-with open(f"web/index.html", "w") as f:
+formatted_message = read_template("template.html").safe_substitute({"header": header, "table_data": table_data})
+with open(f"index.html", "w") as f:
     f.write(formatted_message)

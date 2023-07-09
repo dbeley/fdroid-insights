@@ -1,0 +1,33 @@
+name: refresh-data
+on:
+  workflow_dispatch: # allows manual triggering
+  schedule:
+    - cron: '16 6 * * 1' # runs every Sunday at 7:16
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Download latest F-Droid data
+        run: |
+          curl -O "https://f-droid.org/repo/index-v2.json"
+      - name: Initialize python env
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas pygithub python-gitlab
+      - name: Create new export
+        run: |
+          python fdroid_data_exporter.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      - name: Create new template
+        run: |
+          python fdroid_html_builder.py
+      - uses: stefanzweifel/git-auto-commit-action@v4

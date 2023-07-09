@@ -18,7 +18,13 @@ df = df.astype(
         "repository_watchers_count": "Int64",
     }
 )
-df = df.fillna(0)
+df = df.fillna(
+    {
+        "repository": "",
+        "repository_domain": "",
+        "summary": "",
+    }
+)
 
 header = (
     "<th>Name</th>"

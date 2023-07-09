@@ -9,8 +9,7 @@ $(document).ready(function() {
 	// DataTable initialisation
 	$('#insights').DataTable(
 		{
-			// "dom": '<"dt-buttons"BQf><"clear">lirtp',
-			"dom": 'BQlfrtip',
+			"dom": 'Blfrtip',
 			"buttons": [
 				'copy',
         		'csv',

@@ -18,8 +18,8 @@ df = df.astype(
 )
 df = df.fillna(
     {
-        "repository_forks_count": 0,
-        "repository_stars_count": 0,
+        # "repository_forks_count": 0,
+        # "repository_stars_count": 0,
         "repository": "",
         "repository_domain": "",
         "summary": "",

@@ -8,7 +8,7 @@ $(document).ready(function() {
   	] );
 
 	// DataTable initialisation
-	$('#example').DataTable(
+	$('#insights').DataTable(
 		{
 			"dom": '<"dt-buttons"Bf><"clear">lirtp',
 			"paging": true,

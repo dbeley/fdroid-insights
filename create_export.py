@@ -74,17 +74,17 @@ for app_name, app_raw_data in json_object['packages'].items():
         icon_url = f"https://f-droid.org/repo{icon_url['name']}"
 
     list_data.append({ 'name': metadata["name"]["en-US"],
+                'icon': icon_url,
                 'id': app_name,
                 'repository': repository,
+                **repository_stats,
                 'repository_domain': repository_domain,
-                'summary_en': summary_en,
-                'description_en': description_en,
+                'summary': summary_en,
+                # 'description': description_en,
                 'categories': metadata["categories"],
                 'added': metadata["added"],
                 'last_updated': metadata["lastUpdated"],
                 'url': f"https://f-droid.org/en/packages/{app_name}",
-                'icon_url': icon_url,
-                **repository_stats
                 })
 
 df = pd.DataFrame.from_records(list_data)

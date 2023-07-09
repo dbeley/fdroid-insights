@@ -6,29 +6,59 @@ def read_template(file: str) -> Template:
         content = f.read()
     return Template(content)
 
-df = pd.read_csv("export_formatted.csv")
+df = pd.read_csv("export.csv")
 df = df.astype({"repository_stars_count": "Int64",
                 "repository_forks_count": "Int64",
                 "repository_subscribers_count": "Int64",
                 "repository_watchers_count": "Int64"})
+df = df.fillna(0)
 
-header = ""
-# Export to html
-for column_name in list(df.columns.values):
-    header += f"<th>{column_name.replace('_', ' ').title()}</th>\n"
-
-print(header)
+header = (
+        "<th>Name</th>"
+        "<th>Repository</th>"
+        "<th>Repository Stars Count</th>"
+        "<th>Repository Forks Count</th>"
+        "<th>Repository Subscribers Count</th>"
+        "<th>Repository Watchers Count</th>"
+        "<th>Repository Domain</th>"
+        "<th>Summary</th>"
+        "<th>Categories</th>"
+        "<th>Added</th>"
+        "<th>Last Updated</th>"
+        )
 
 table_data = ""
 table_data += "<tbody>\n"
 for index, row in df.iterrows():
-    table_data += "<tr>\n"
-    for column_name in list(df.columns.values):
-        content = row[column_name]
-        if column_name in ["repository", "url"]:
-            content = f"<a href='{content}'>{content}</a>"
-        table_data += f"<td>{content}</td>"
-    table_data += "</tr>\n"
+    icon = row['icon']
+    repository = row['repository']
+    url = row['url']
+    table_data += (
+            "<tr>\n"
+            f"<td><img src='{icon}' width='32' alt='{icon}'> <a href='{url}'>{row['name']}</a></td>"
+            "\n"
+            f"<td><a href='{repository}'>{repository}</a></td>"
+            "\n"
+            f"<td>{row['repository_stars_count']}</td>"
+            "\n"
+            f"<td>{row['repository_forks_count']}</td>"
+            "\n"
+            f"<td>{row['repository_subscribers_count']}</td>"
+            "\n"
+            f"<td>{row['repository_watchers_count']}</td>"
+            "\n"
+            f"<td>{row['repository_domain']}</td>"
+            "\n"
+            f"<td>{row['summary']}</td>"
+            "\n"
+            f"<td>{row['categories']}</td>"
+            "\n"
+            f"<td>{row['added']}</td>"
+            "\n"
+            f"<td>{row['last_updated']}</td>"
+            "\n"
+            "</tr>\n"
+            )
 
 
 formatted_message = read_template("web/template.html").safe_substitute({"header": header, "table_data": table_data})

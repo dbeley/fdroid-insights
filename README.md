@@ -2,8 +2,7 @@
 
 ![F-Droid Insights - Easily explore F-Droid apps with data from external sources](imgs/2023-07-10_fdroid-insights.png)
 
-
-[**F-Droid Insights**](https://dbeley.github.io/fdroid-insights) is a simple website that let you explore F-Droid apps enriched by data coming from external websites such as Github. It facilitates the discovery of popular and well-maintained projects which might be challenging to locate on the regular F-Droid website.
+[**F-Droid Insights**](https://dbeley.github.io/fdroid-insights) is a simple website that lets you explore F-Droid apps enriched by data coming from external websites such as Github. It facilitates the discovery of popular and well-maintained projects which might be challenging to locate on the regular F-Droid website.
 
 ## Motivation
 
@@ -24,14 +23,12 @@ The data should be re-generated every sunday.
 
 If you want to manually create an export:
 
-- Download `index-v2.json` from [F-Droid](https://f-droid.org/en/docs/All_our_APIs).
+- Download `index-v2.json` from [F-Droid](https://f-droid.org/en/docs/All_our_APIs) (~35 MB file).
 - Copy `.env.example` to `.env` and fill it with your own tokens.
 - `python fdroid_data_exporter.py`: will create `export.csv` containing F-Droid apps data.
 - `python fdroid_html_builder.py`: will create `docs/index.html` with `export.csv` and `template.html`.
 
 ## External data
-
-For now the external data used are the following:
 
 - Github: number of stars, forks
 - Gitlab : number of stars, forks

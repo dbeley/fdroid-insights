@@ -19,7 +19,7 @@ The idea behind **F-Droid Insights** is to leverage external metrics to help fin
 
 ## Usage
 
-The data should be re-generated every sunday.
+The data should be re-generated every monday.
 
 If you want to manually create an export:
 

@@ -20,7 +20,7 @@ $(document).ready(function() {
 			"paging": true,
 			"autoWidth": true,
 			"pageLength": 25,
-			"order": [[2, 'desc']],
+			"order": [[8, 'desc']],
     		"columnDefs": [
       	  	  { type: numbersType, targets: [2, 3] },
       	  	  { targets: [7, 8], render: DataTable.render.datetime('x', 'YYYY-MM-DD', 'en') },

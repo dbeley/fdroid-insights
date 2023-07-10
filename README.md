@@ -1,5 +1,8 @@
 ﻿# fdroid-insights
 
+![F-Droid Insights - Easily explore F-Droid apps with data from external sources](imgs/2023-07-10_fdroid-insights.png)
+
+
 [**F-Droid Insights**](https://dbeley.github.io/fdroid-insights) is a simple website that let you explore F-Droid apps enriched by data coming from external websites such as Github. It facilitates the discovery of popular and well-maintained projects which might be challenging to locate on the regular F-Droid website.
 
 ## Motivation

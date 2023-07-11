@@ -1,0 +1,17 @@
+org.moire.ultrasonic
+com.wireguard.android
+com.jerboa
+it.niedermann.owncloud.notes
+com.nextcloud.android.beta
+org.tasks
+at.bitfire.davdroid
+org.mozilla.fennec_fdroid
+com.fsck.k9
+com.keylesspalace.tusky
+me.hackerchick.catima
+app.organicmaps
+com.beemdevelopment.aegis
+org.schabi.newpipe
+de.markusfisch.android.binaryeye
+com.artifex.mupdf.viewer.app
+dev.lonami.klooni

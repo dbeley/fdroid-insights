@@ -9,6 +9,9 @@ def read_template(file: str) -> Template:
     return Template(content)
 
 
+with open("recommended_apps.txt", "r") as f:
+    recommended_apps = [x.strip() for x in f.readlines()]
+
 df = pd.read_csv("export.csv")
 df = df.astype(
     {
@@ -25,7 +28,6 @@ df = df.fillna(
         "summary": "",
     }
 )
-
 header = (
     "<thead>\n"
     "<tr>\n"
@@ -38,6 +40,7 @@ header = (
     "<th>Categories</th>\n"
     "<th>Added</th>\n"
     "<th>Last Updated</th>\n"
+    "<th>Recommended</th>\n"
     "</tr>\n"
     "</thead>\n"
 )
@@ -45,6 +48,7 @@ header = (
 table_data = "<tbody>\n"
 for index, row in df.iterrows():
     name = f"<td><a href='{row['url']}'>{row['name']}</a></td>"
+    recommended = row["id"] in recommended_apps
     table_data += (
         "<tr>\n"
         f"{name}"
@@ -64,6 +68,8 @@ for index, row in df.iterrows():
         f"<td>{row['added']}</td>"
         "\n"
         f"<td>{row['last_updated']}</td>"
+        "\n"
+        f"<td>{recommended}</td>"
         "\n"
         "</tr>\n"
     )

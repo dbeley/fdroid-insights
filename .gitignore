@@ -3,3 +3,4 @@
 *.csv
 todo.txt
 .direnv/
+__pycache__/

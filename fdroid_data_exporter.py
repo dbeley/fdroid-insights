@@ -1,18 +1,23 @@
 import os
 import json
-import time
 import logging
-import calendar
-import requests
 import pandas as pd
 from github import Github
-from github.GithubException import UnknownObjectException
-from github.GithubException import RateLimitExceededException
 from gitlab import Gitlab
-from gitlab.exceptions import GitlabGetError
+from utils import get_github_repository_data
+from utils import get_gitlab_repository_data
+from utils import get_codeberg_repository_data
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s :: %(message)s")
 logger = logging.getLogger(__name__)
+
+REPOSITORY_APIS = {
+    "github.com": Github(os.environ.get("GITHUB_TOKEN")),
+    "gitlab.com": Gitlab(private_token=os.environ.get("GILAB_TOKEN")),
+    "invent.kde.org": Gitlab(
+        url="https://invent.kde.org", private_token=os.environ.get("GILAB_KDE_TOKEN")
+    ),
+}
 
 
 def _extract_repository_name(repository: str, repository_domain: str) -> str:
@@ -26,53 +31,27 @@ def _extract_repository_name(repository: str, repository_domain: str) -> str:
     return repository_name
 
 
-def _get_repository_stats(
-    g: Github, gl: Gitlab, repository: str, repository_domain: str
-) -> dict[str, str]:
+def _get_repository_stats(repository: str, repository_domain: str) -> dict[str, str]:
     if not repository:
         return {}
     repository_name = _extract_repository_name(repository, repository_domain)
-
-    if repository_domain == "github.com":
-        try:
-            repo = g.get_repo(repository_name)
-        except UnknownObjectException:
-            logger.warning(f"Repository {repository_name} was not found on Github.")
-            return {}
-        except RateLimitExceededException:
-            core_rate_limit = g.get_rate_limit().core
-            reset_timestamp = calendar.timegm(core_rate_limit.reset.timetuple())
-            sleep_time = reset_timestamp - calendar.timegm(time.gmtime()) + 10
-            logger.warning(f"Rate-limit detected, sleeping for {sleep_time} seconds.")
-            time.sleep(sleep_time)
-            repo = g.get_repo(repository_name)
-        return {
-            "repository_stars_count": repo.stargazers_count,
-            "repository_forks_count": repo.forks_count,
-        }
-    elif repository_domain == "gitlab.com":
-        try:
-            repo = gl.projects.get(repository_name)
-        except GitlabGetError:
-            logger.warning(f"Repository {repository_name} was not found on Gitlab.")
-            return {}
-        return {
-            "repository_stars_count": repo.star_count,
-            "repository_forks_count": repo.forks_count,
-        }
-    elif repository_domain == "codeberg.org":
-        result = requests.get(f"https://codeberg.org/api/v1/repos/{repository_name}")
-        if result.status_code == 200:
-            json_result = result.json()
-            return {
-                "repository_stars_count": json_result.get("stars_count"),
-                "repository_forks_count": json_result.get("forks_count"),
-            }
+    match repository_domain:
+        case "github.com":
+            return get_github_repository_data(
+                REPOSITORY_APIS["github.com"], repository_name
+            )
+        case "codeberg.org":
+            return get_codeberg_repository_data(repository_name)
+        case "gitlab.com":
+            return get_gitlab_repository_data(
+                REPOSITORY_APIS["gitlab.com"], repository_name
+            )
+        case "invent.kde.org":
+            return get_gitlab_repository_data(
+                REPOSITORY_APIS["invent.kde.org"], repository_name
+            )
     return {}
 
-
-g = Github(os.environ.get("GITHUB_TOKEN"))
-gl = Gitlab(private_token=os.environ.get("GILAB_TOKEN"))
 
 with open("index-v2.json", "rb") as f:
     json_object = json.load(f)
@@ -94,7 +73,7 @@ for index, (app_name, app_raw_data) in enumerate(json_items, 1):
     metadata = app_raw_data["metadata"]
     repository = metadata.get("sourceCode", "")
     repository_domain = repository.split("://")[1].split("/")[0] if repository else ""
-    repository_stats = _get_repository_stats(g, gl, repository, repository_domain)
+    repository_stats = _get_repository_stats(repository, repository_domain)
     summary_en = metadata["summary"].get("en-US", "") if "summary" in metadata else ""
     description_en = (
         metadata["description"].get("en-US", "") if "description" in metadata else ""

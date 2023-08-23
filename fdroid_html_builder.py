@@ -44,9 +44,12 @@ header = (
 
 table_data = "<tbody>\n"
 for index, row in df.iterrows():
-    name = f"<td><a href='{row['url']}'>{row['name']}</a></td>"
+    name = f"<a href='{row['url']}'>{row['name']}</a></td>"
     table_data += (
         "<tr>\n"
+        "<td>"
+        f"<img loading='lazy' width='30' src='{row['icon']}' alt=''/>"
+        "\n"
         f"{name}"
         "\n"
         f"<td><a href='{row['repository']}'>{row['repository']}</a></td>"

@@ -82,6 +82,8 @@ for index, (app_name, app_raw_data) in enumerate(json_items, 1):
     if icon_url:
         icon_url = f"https://f-droid.org/repo{icon_url['name']}"
 
+    categories = ", ".join(metadata.get("categories", []))
+
     list_data.append(
         {
             "name": metadata["name"]["en-US"],
@@ -92,7 +94,7 @@ for index, (app_name, app_raw_data) in enumerate(json_items, 1):
             "repository_domain": repository_domain,
             "summary": summary_en,
             # 'description': description_en,
-            "categories": metadata["categories"],
+            "categories": categories,
             "added": metadata["added"],
             "last_updated": metadata["lastUpdated"],
             "url": f"https://f-droid.org/en/packages/{app_name}",

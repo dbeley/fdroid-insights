@@ -33,3 +33,19 @@ If you want to manually create an export:
 - Github: number of stars, forks
 - Gitlab : number of stars, forks
 - Codeberg : number of stars, forks
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request or open an issue for bugs, features, or documentation improvements.
+
+### Development
+
+1. Clone the repository
+2. Download `index-v2.json` from F-Droid
+3. Copy `.env.example` to `.env` and add your API tokens
+4. Run `python fdroid_data_exporter.py` to generate data
+5. Run `python fdroid_html_builder.py` to generate the website
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

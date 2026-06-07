@@ -4,16 +4,18 @@ import logging
 import pandas as pd
 from github import Github
 from gitlab import Gitlab
-from utils import get_github_repository_data
-from utils import get_gitlab_repository_data
-from utils import get_codeberg_repository_data
+from utils import (
+    get_github_repository_data,
+    get_gitlab_repository_data,
+    get_codeberg_repository_data,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s :: %(message)s")
 logger = logging.getLogger(__name__)
 
 REPOSITORY_APIS = {
     "github.com": Github(os.environ.get("GITHUB_TOKEN")),
-    "gitlab.com": Gitlab(private_token=os.environ.get("GILAB_TOKEN")),
+    "gitlab.com": Gitlab(private_token=os.environ.get("GITLAB_TOKEN")),
     "invent.kde.org": Gitlab(
         url="https://invent.kde.org", private_token=os.environ.get("GILAB_KDE_TOKEN")
     ),

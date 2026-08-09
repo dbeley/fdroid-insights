@@ -4,6 +4,7 @@ import requests
 import time
 from github import Github
 from gitlab import Gitlab
+from gitlab.exceptions import GitlabAuthenticationError
 from gitlab.exceptions import GitlabGetError
 from github.GithubException import UnknownObjectException
 from github.GithubException import RateLimitExceededException
@@ -33,6 +34,9 @@ def get_github_repository_data(g: Github, repository_name: str):
 def get_gitlab_repository_data(gl: Gitlab, repository_name: str):
     try:
         repo = gl.projects.get(repository_name)
+    except GitlabAuthenticationError:
+        logger.warning(f"Invalid GitLab token, skipping {repository_name}.")
+        return {}
     except GitlabGetError:
         logger.warning(f"Repository {repository_name} was not found on Gitlab.")
         return {}

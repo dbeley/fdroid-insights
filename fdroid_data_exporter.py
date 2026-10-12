@@ -21,6 +21,12 @@ REPOSITORY_APIS = {
     ),
 }
 
+# A single unhandled error used to abort the whole export and freeze the
+# published data, so apps are now exported individually. Above a certain
+# failure ratio the run still aborts, to avoid silently publishing a partial
+# dataset (for instance after a change in the F-Droid metadata format).
+MAX_UNEXPECTED_ERROR_RATIO = 0.01
+
 
 def _extract_repository_name(repository: str, repository_domain: str) -> str:
     repository_name = (
@@ -63,45 +69,70 @@ with open("index-v2.json", "rb") as f:
 # packages object: name of all the apps (4137+)
 
 list_data = []
-json_items = json_object["packages"].items()
-logger.info("Fetching data for %s apps...", len(json_items))
+json_items = list(json_object["packages"].items())
+total_apps = len(json_items)
+unexpected_errors = 0
+logger.info("Fetching data for %s apps...", total_apps)
 for index, (app_name, app_raw_data) in enumerate(json_items, 1):
     logger.info(
         "[%s/%s] Fetching data for %s",
-        str(index).zfill(len(str(len(json_items)))),
-        len(json_items),
+        str(index).zfill(len(str(total_apps))),
+        total_apps,
         app_name,
     )
-    metadata = app_raw_data["metadata"]
-    repository = metadata.get("sourceCode", "")
-    repository_domain = repository.split("://")[1].split("/")[0] if repository else ""
-    repository_stats = _get_repository_stats(repository, repository_domain)
-    summary_en = metadata["summary"].get("en-US", "") if "summary" in metadata else ""
-    description_en = (
-        metadata["description"].get("en-US", "") if "description" in metadata else ""
-    )
-    icon_url = metadata["icon"].get("en-US", "") if "icon" in metadata else ""
-    if icon_url:
-        icon_url = f"https://f-droid.org/repo{icon_url['name']}"
+    try:
+        metadata = app_raw_data["metadata"]
+        repository = metadata.get("sourceCode", "")
+        repository_domain = (
+            repository.split("://")[1].split("/")[0] if repository else ""
+        )
+        repository_stats = _get_repository_stats(repository, repository_domain)
+        summary_en = (
+            metadata["summary"].get("en-US", "") if "summary" in metadata else ""
+        )
+        description_en = (
+            metadata["description"].get("en-US", "")
+            if "description" in metadata
+            else ""
+        )
+        icon_url = metadata["icon"].get("en-US", "") if "icon" in metadata else ""
+        if icon_url:
+            icon_url = f"https://f-droid.org/repo{icon_url['name']}"
 
-    categories = ", ".join(metadata.get("categories", []))
+        categories = ", ".join(metadata.get("categories", []))
 
-    list_data.append(
-        {
-            "name": metadata["name"]["en-US"],
-            "icon": icon_url,
-            "id": app_name,
-            "repository": repository,
-            **repository_stats,
-            "repository_domain": repository_domain,
-            "summary": summary_en,
-            # 'description': description_en,
-            "categories": categories,
-            "added": metadata["added"],
-            "last_updated": metadata["lastUpdated"],
-            "url": f"https://f-droid.org/en/packages/{app_name}",
-        }
-    )
+        list_data.append(
+            {
+                "name": metadata["name"]["en-US"],
+                "icon": icon_url,
+                "id": app_name,
+                "repository": repository,
+                **repository_stats,
+                "repository_domain": repository_domain,
+                "summary": summary_en,
+                # 'description': description_en,
+                "categories": categories,
+                "added": metadata["added"],
+                "last_updated": metadata["lastUpdated"],
+                "url": f"https://f-droid.org/en/packages/{app_name}",
+            }
+        )
+    except Exception as error:
+        unexpected_errors += 1
+        logger.warning(
+            "Skipping %s: unexpected %s (%s)",
+            app_name,
+            type(error).__name__,
+            error,
+        )
+
+if unexpected_errors:
+    logger.warning("%s/%s apps were skipped.", unexpected_errors, total_apps)
+    if unexpected_errors > max(10, total_apps * MAX_UNEXPECTED_ERROR_RATIO):
+        raise RuntimeError(
+            f"{unexpected_errors}/{total_apps} apps could not be exported, "
+            "aborting instead of publishing a partial export."
+        )
 
 df = pd.DataFrame.from_records(list_data)
 df = df.astype(

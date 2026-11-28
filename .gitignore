@@ -1,6 +1,8 @@
 .env
 *.json
+!repository_stats_cache.json
 *.csv
 todo.txt
 .direnv/
+.worktrees/
 __pycache__/

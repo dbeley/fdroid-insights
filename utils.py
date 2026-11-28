@@ -17,14 +17,29 @@ logger = logging.getLogger(__name__)
 # repository we cannot read (blocked, deleted, renamed, rate-limited...) is
 # skipped rather than aborting the whole export.
 
+# Waiting for a rate-limit reset can cost a full hour, per hit, with no upper
+# bound: that is what made the CI job run until it was killed by its timeout.
+# Sleep only for short windows, skip the repository otherwise.
+MAX_RATE_LIMIT_SLEEP_SECONDS = 300
+
+
+def _seconds_until_rate_limit_reset(g: Github) -> int:
+    core_rate_limit = g.get_rate_limit().core
+    reset_timestamp = calendar.timegm(core_rate_limit.reset.timetuple())
+    return reset_timestamp - calendar.timegm(time.gmtime()) + 10
+
 
 def _fetch_github_repo(g: Github, repository_name: str):
     try:
         return g.get_repo(repository_name)
     except RateLimitExceededException:
-        core_rate_limit = g.get_rate_limit().core
-        reset_timestamp = calendar.timegm(core_rate_limit.reset.timetuple())
-        sleep_time = reset_timestamp - calendar.timegm(time.gmtime()) + 10
+        sleep_time = _seconds_until_rate_limit_reset(g)
+        if sleep_time > MAX_RATE_LIMIT_SLEEP_SECONDS:
+            logger.warning(
+                f"Rate-limit detected, reset in {sleep_time} seconds: skipping "
+                f"{repository_name} instead of stalling the export."
+            )
+            raise
         logger.warning(f"Rate-limit detected, sleeping for {sleep_time} seconds.")
         time.sleep(sleep_time)
         return g.get_repo(repository_name)

@@ -4,14 +4,28 @@ on:
   schedule:
     - cron: '16 6 * * 1' # runs every Monday at 6:16
 
+# The run must be able to push the new export back to the repository.
+permissions:
+  contents: write
+
+# Never run two refreshes at once: the second one would fight with the first
+# over the auto-commit.
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Fail visibly after 90 minutes instead of being killed by the implicit
+    # 6-hour default: a cancelled job sends no notification and silently skips
+    # the publishing steps.
+    timeout-minutes: 90
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set up Python 3.10
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - name: Download latest F-Droid data
@@ -31,6 +45,6 @@ jobs:
       - name: Create new template
         run: |
           python fdroid_html_builder.py
-      - name: Pull Remote Changes
-        run: git pull
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Apply automatic changes

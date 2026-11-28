@@ -7,7 +7,7 @@ failing repository must now be skipped instead.
 """
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -94,6 +94,22 @@ def test_github_failure_after_rate_limit_sleep_is_skipped():
 
     with patch("utils.time.sleep"):
         assert get_github_repository_data(g, "dbeley/fdroid-insights") == {}
+
+
+def test_github_far_rate_limit_reset_is_skipped_without_sleeping(caplog):
+    """Waiting for a distant reset used to stall the export for hours."""
+    g = MagicMock()
+    reset = datetime.now(timezone.utc) + timedelta(hours=1)
+    g.get_rate_limit.return_value = MagicMock(core=MagicMock(reset=reset))
+    g.get_repo.side_effect = RateLimitExceededException(
+        403, {"message": "API rate limit exceeded"}, None
+    )
+
+    with patch("utils.time.sleep") as sleep, caplog.at_level(logging.WARNING):
+        assert get_github_repository_data(g, "dbeley/fdroid-insights") == {}
+
+    assert not sleep.called
+    assert "skipping dbeley/fdroid-insights" in caplog.text
 
 
 # --- Gitlab -----------------------------------------------------------------
